@@ -1,0 +1,8 @@
+# adjacency list representing the (multi)graph
+graph=graph.txt
+# sample size to be extracted from the adjacency list
+samples=10,100,1000,10000,100000,1000000,10000000,100000000
+# given the same initial vertex, chooses different outgoing vertices during the visiting process
+next=5,6,7,8,9,10
+# seeding node from which I want to start to traverse the graph
+starting=0
