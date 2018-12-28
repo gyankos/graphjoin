@@ -1,7 +1,7 @@
 # General dataset and library setup
 
 ## How to set-up the C++ Project
-The C++ project contains the actual code for GCEA and the querying for Virtuoso, plus some scripts required to prepare the data for the input. Mainly, this project requires to both install the Boost library and to set-up Virtuoso.
+The C++ project contains the actual code for GCEA and the querying for Virtuoso, plus some scripts required to prepare the data for the input. Mainly, this project requires to both install the Boost library and to set-up Virtuoso. `CMake` is used to compile all the project's binaries, that are the following: [TODO]
 
 ## How to set-up Virtuoso.
 The process of the Virtuoso Setup is described by the script `virtuoso_dependencies.sh`, which will install all the dependencies and libraries required to connect the C++ code to the actual Virtuoso Driver. After doing that, we need to set-up the ODBC connections that are exploited by the C++ libraries.
