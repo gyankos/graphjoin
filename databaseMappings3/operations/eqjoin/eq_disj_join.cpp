@@ -113,7 +113,9 @@ void disjunctive(unsigned long l, unsigned long r, EDGES_OUTIN* EL, unsigned lon
 double EqDisjunctiveJoin(const std::string &leftPath, const std::string &rightPath, const std::string &resultPath,
                          std::map<unsigned int, unsigned int> &join) {
 
-
+    notLeft.clear();
+    notRight.clear();
+    BI.clear();
     //Reading the schema stored in the folder, and performing the join between the vertices.
     /*std::map<std::string,int> leftMap, rightMap;
     int count = 0;

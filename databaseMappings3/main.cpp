@@ -6,6 +6,7 @@
 #include <sstream>
 #include <map>
 #include "operations/eqjoin/eq_conj_join.h"
+#include "operations/eqjoin/eq_disj_join.h"
 #include <vector>
 #include <algorithm>
 
@@ -18,6 +19,8 @@ int main(int argc, char** argv) {
     std::string positions {argv[3]};
     // e.g., 5,6,7,....
     std::string seedpos {argv[4]};
+    // e.g., true = conjunctive. false = disjunctive.
+    std::string type {argv[5]};
 
     std::vector<int> sizes;
     {
@@ -89,7 +92,11 @@ int main(int argc, char** argv) {
         std::string leftOperandVertex = leftOperandEdge + "_vertices.csv";
         std::string rightOperandVertex = rightOperandEdge + "_vertices.csv";
         // TODO: check the operation
-        std::cout << cgsString << "," << EqConjunctiveJoin(leftOperandVertex, rightOperandVertex, outFile, map) << std::endl;
+        if (type == "true") {
+            std::cout << cgsString << "," << EqConjunctiveJoin(leftOperandVertex, rightOperandVertex, outFile, map) << std::endl;
+        } else {
+            std::cout << cgsString << "," << EqDisjunctiveJoin(leftOperandVertex, rightOperandVertex, outFile, map) << std::endl;
+        }
 
         //"/media/giacomo/Data/Progetti/journalgraphjoin/databaseMappings3/operators/graph.txt_100000000_5_0.400000_1_0_vertices.csv"
         // "/media/giacomo/Data/Progetti/journalgraphjoin/databaseMappings3/operators/graph.txt_100000000_6_0.400000_1_0_vertices.csv"
