@@ -1,7 +1,13 @@
 # General dataset and library setup
 
 ## How to set-up the C++ Project
-The C++ project contains the actual code for GCEA and the querying for Virtuoso, plus some scripts required to prepare the data for the input. Mainly, this project requires to both install the Boost library and to set-up Virtuoso.
+The C++ project contains the actual code for GCEA and the querying for Virtuoso, plus some scripts required to prepare the data for the input. Mainly, this project requires to both install the Boost library and to set-up Virtuoso. `CMake` is used to compile all the project's binaries, that are the following: 
+* `graph_sampler`, which samples an input bigger graph in smaller operand graphs-
+* `reindexing`, which reindexes the CSV file after the sampling phase in Java (this is just a preparation to the data representation, and does not represent a part of the join algorithm).
+* `print_graph`, which prints the serialized graph.
+* `serializer`, which serializes a graph operand in secondary memory (First and second phase of the graph join algorithm).
+* `graph_join`, which actually performs the graph join phase.
+* `virtuoso_loader`, which loads the operands into virtuoso from CSV files.
 
 ## How to set-up Virtuoso.
 The process of the Virtuoso Setup is described by the script `virtuoso_dependencies.sh`, which will install all the dependencies and libraries required to connect the C++ code to the actual Virtuoso Driver. After doing that, we need to set-up the ODBC connections that are exploited by the C++ libraries.
