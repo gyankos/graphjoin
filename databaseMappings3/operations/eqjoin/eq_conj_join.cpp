@@ -3,7 +3,8 @@
 // Implementation of the algorithm based upon the bucketing over both vertices and their outgoing vertices
 //
 
-
+#include <string>
+#include <map>
 #include <set>
 #include <list>
 #include <fstream>
@@ -11,7 +12,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <cassert>
-#include "eq_join_proposed.h"
+#include "eq_conj_join.h"
 #include "../../serializer/mappers.h"
 #include "../../serializer/HashIndexArrayField.h"
 #include "../utils/query.h"
@@ -32,8 +33,8 @@
 #include "../../access/AccessFactory.h"
 #include "../../result/concrete/resultProposed.h"*/
 
-double EqJoin(const std::string &leftPath, const std::string &rightPath, const std::string &resultPath,
-              std::map<unsigned int, unsigned int>& join) {
+double EqConjunctiveJoin(const std::string &leftPath, const std::string &rightPath, const std::string &resultPath,
+                         std::map<unsigned int, unsigned int> &join) {
 
 
     //Reading the schema stored in the folder, and performing the join between the vertices.
@@ -126,8 +127,8 @@ double EqJoin(const std::string &leftPath, const std::string &rightPath, const s
                             descriptorFromOffset(&v,offsetV,fileOffsetRight);
                             if (qt1.compileOverRightVertex(&v)) {
 
-                                //vertices++;
 
+                                //
                                 storeVertex(u.vertexHeader->id,v.vertexHeader->id, result, &cont);
 
                                 unsigned int NvSize = VOUT_SIZE(&v);

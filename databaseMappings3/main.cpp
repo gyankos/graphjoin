@@ -5,7 +5,7 @@
 #include <cstring>
 #include <sstream>
 #include <map>
-#include "operations/eqjoin/eq_join_proposed.h"
+#include "operations/eqjoin/eq_conj_join.h"
 #include <vector>
 #include <algorithm>
 
@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
         std::string leftOperandVertex = leftOperandEdge + "_vertices.csv";
         std::string rightOperandVertex = rightOperandEdge + "_vertices.csv";
         // TODO: check the operation
-        std::cout << cgsString << "," << EqJoin(leftOperandVertex, rightOperandVertex, outFile, map) << std::endl;
+        std::cout << cgsString << "," << EqConjunctiveJoin(leftOperandVertex, rightOperandVertex, outFile, map) << std::endl;
 
         //"/media/giacomo/Data/Progetti/journalgraphjoin/databaseMappings3/operators/graph.txt_100000000_5_0.400000_1_0_vertices.csv"
         // "/media/giacomo/Data/Progetti/journalgraphjoin/databaseMappings3/operators/graph.txt_100000000_6_0.400000_1_0_vertices.csv"
