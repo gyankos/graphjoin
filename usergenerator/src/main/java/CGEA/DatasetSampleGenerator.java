@@ -23,14 +23,14 @@ public class DatasetSampleGenerator extends Runners {
         String conf_txt_content = "graph="+graphFile.getAbsolutePath()+"\nsamples="+properties.getProperty("SAMPLES_PARAMETERS")+"\nnext="+properties.getProperty("NEXT_PARAMETERS")+"\nstarting="+properties.getProperty("STARTING_SAMPLE");
         System.out.println(conf_txt_content);
         System.out.println("================================================");
-        File tempFile = File.createTempFile("conf.txt", DatasetSampleGenerator.class.getName());
+        /*File tempFile = File.createTempFile("conf.txt", DatasetSampleGenerator.class.getName());
         Files.asCharSink(tempFile, Charset.forName("UTF-8")).write(conf_txt_content);
         // Sampling
         Runners.run(null, null, properties.getProperty("EXTRACT_OPERANDS_FROM_DATASET"),
-                                             tempFile.getAbsolutePath());
+                                             tempFile.getAbsolutePath());*/
         System.out.println("================================================");
         System.out.println("================================================\n\n\n\n\n");
-        tempFile.delete();
+        //tempFile.delete();
 
         System.out.println("Running the vertex generation for each generated operand:");
         System.out.println("================================================");

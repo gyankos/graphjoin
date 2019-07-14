@@ -15,6 +15,7 @@
 #include <map>
 #include <ctime>
 #include <algorithm>
+#include <malloc.h>
 #include "entry.h"
 #include "../hashing/hashing.h"
 #include "serializers.h"
@@ -119,6 +120,7 @@ std::pair<double,double> csvSerialize(std::string &csvVertices, std::string csvE
         it++;
     }
     auto finishIndex = std::chrono::high_resolution_clock::now();
+    malloc_stats();
     std::chrono::duration<double> loadingTime = finishLoad - start;
     std::chrono::duration<double> d = finishIndex - start;
 

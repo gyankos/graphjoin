@@ -58,7 +58,10 @@ inline static std::map<unsigned long, std::pair<unsigned long, unsigned long>>::
             else if (left[BI_i].hash > right[BI_j].hash) BI_j++;
             else {
                 unsigned long hash = left[BI_i].hash;
+                BI_MAX = hash;
                 BI[hash] = std::make_pair(left[BI_i].offset, right[BI_j].offset);
+                BI_i++;
+                BI_j++;
                 if (hash == kp)
                     return BI.find(kp);
                 else if (hash > kp)
@@ -76,16 +79,18 @@ void disjunctive(unsigned long l, unsigned long r, EDGES_OUTIN* EL, unsigned lon
         while ((EL_i < EL_size) && (EL[EL_i].adjacentHash == kp)) {
             VAEntry up;
             descriptorFromVertexID(&up, EL[EL_i].adjacentID, indexLeft, fileOffsetLeft);
-            qt2.compileOverLeftVertex(&up);
-            unsigned long offsetV = it->second.second;
-            unsigned long vEnd = ((ER_j) == sizeRight-2) ? sizeRightVAOffset : right[ER_j+1].offset;
-            while (offsetV < vEnd) {
-                VAEntry vp;
-                descriptorFromOffset(&vp,offsetV,fileOffsetRight);
-                if (qt2.compileOverRightVertex(&vp)) {
-                    storeEdge(l,r,up.vertexHeader->id,vp.vertexHeader->id, result, NULL);
+            if (notLeft.find(up.vertexHeader->id) == notLeft.end()) {
+                qt2.compileOverLeftVertex(&up);
+                unsigned long offsetV = it->second.second;
+                unsigned long vEnd = ((ER_j) == sizeRight-2) ? sizeRightVAOffset : right[ER_j+1].offset;
+                while (offsetV < vEnd) {
+                    VAEntry vp;
+                    descriptorFromOffset(&vp,offsetV,fileOffsetRight);
+                    if ((notRight.find(vp.vertexHeader->id) == notRight.end()) && qt2.compileOverRightVertex(&vp)) {
+                        storeEdge(l,r,up.vertexHeader->id,vp.vertexHeader->id, result, NULL);
+                    }
+                    offsetV += vp.vertexHeader->size;
                 }
-                offsetV += vp.vertexHeader->size;
             }
             EL_i++;
         }
@@ -94,16 +99,18 @@ void disjunctive(unsigned long l, unsigned long r, EDGES_OUTIN* EL, unsigned lon
         while ((ER_j < ER_size) && (ER[ER_j].adjacentHash == kp)) {
             VAEntry vp;
             descriptorFromVertexID(&vp, ER[ER_j].adjacentID, indexRight, fileOffsetRight);
-            unsigned long offsetU = it->second.first;
-            unsigned long uEnd = ((EL_i) == sizeLeft-2) ? sizeLeftVAOffset : left[EL_i+1].offset;
-            while (offsetU < uEnd) {
-                VAEntry up;
-                descriptorFromOffset(&up,offsetU,fileOffsetLeft);
-                qt2.compileOverLeftVertex(&up);
-                if (qt2.compileOverRightVertex(&vp)) {
-                    storeEdge(l,r,up.vertexHeader->id,vp.vertexHeader->id, result, NULL);
+            if (notRight.find(vp.vertexHeader->id) == notRight.end()) {
+                unsigned long offsetU = it->second.first;
+                unsigned long uEnd = ((EL_i) == sizeLeft-2) ? sizeLeftVAOffset : left[EL_i+1].offset;
+                while (offsetU < uEnd) {
+                    VAEntry up;
+                    descriptorFromOffset(&up,offsetU,fileOffsetLeft);
+                    qt2.compileOverLeftVertex(&up);
+                    if ((notLeft.find(up.vertexHeader->id) == notLeft.end()) && qt2.compileOverRightVertex(&vp)) {
+                        storeEdge(l,r,up.vertexHeader->id,vp.vertexHeader->id, result, NULL);
+                    }
+                    offsetU += up.vertexHeader->size; // next
                 }
-                offsetU += up.vertexHeader->size; // next
             }
             ER_j++;
         }
@@ -183,7 +190,7 @@ double EqDisjunctiveJoin(const std::string &leftPath, const std::string &rightPa
             else if (left[i].hash > right[j].hash) j++;
             else {
                 unsigned long hash = left[i].hash;
-                BI_MAX = hash;
+                BI_MAX = std::max(hash, BI_MAX);
                 BI[hash] = std::make_pair(left[i].offset, right[j].offset);
                 BI_i = i;
                 BI_j = j;

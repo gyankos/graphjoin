@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     // e.g., 5,6,7,....
     std::string seedpos {argv[4]};
     // e.g., true = conjunctive. false = disjunctive.
-    std::string type {argv[5]};
+    std::string type {argv[8]};
 
     std::vector<int> sizes;
     {
@@ -62,6 +62,7 @@ int main(int argc, char** argv) {
     for (unsigned long i = 0; i<N; i++) {
         int currentGraphSize = sizes[i];
         std::string cgsString = std::to_string(currentGraphSize);
+        // Where to write the output files
         std::string outFile{argv[7]};
         outFile += cgsString;
 
@@ -103,13 +104,5 @@ int main(int argc, char** argv) {
         // "3,5" "3,5" "/media/giacomo/Data/out/100000000"
 
     }
-
-
-
-
-
-
-
-
     return 0;
 }
