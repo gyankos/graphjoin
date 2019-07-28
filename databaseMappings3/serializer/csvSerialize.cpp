@@ -28,6 +28,9 @@ unsigned int prime = 17;
 void vertex_load(std::string csvVertices, std::vector<int> numHashes) {
     std::ifstream dataFile(csvVertices);
     std::string vertexLine;
+    hashToVertices.clear();
+    vertexToHash.clear();
+    vertexToValues.clear();
 
     while (std::getline(dataFile, vertexLine)) {
         std::istringstream iss(vertexLine);
@@ -62,6 +65,7 @@ void edge_load(std::string csvEdges) {
     std::ifstream dataFile(csvEdges);
     std::string edgeLine;
     unsigned int src, dst;
+    adjList.clear();
 
     while (dataFile >> src >> dst) {
         adjList.emplace(src, dst);

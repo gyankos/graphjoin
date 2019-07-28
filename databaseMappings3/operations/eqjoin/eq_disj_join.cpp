@@ -304,9 +304,8 @@ double EqDisjunctiveJoin(const std::string &leftPath, const std::string &rightPa
     //double storageTime = (saveClocks)/((CLOCKS_PER_SEC/1000.0));
     t = clock() - t;
     //double algorithmTime = (((double)(t-saveClocks))/(CLOCKS_PER_SEC/1000.0));
-
+    fclose(result);
     return (((double)t)/(CLOCKS_PER_SEC/1000.0));
-
     // quit all files
 
 }
