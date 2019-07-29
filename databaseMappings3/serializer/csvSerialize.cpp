@@ -123,6 +123,9 @@ std::pair<double,double> csvSerialize(std::string &csvVertices, std::string csvE
                     std::sort(out.begin(), out.end());
                     //unsigned long thiOffset = VAOffset;
                     id_to_offset[id] = VAOffset;
+                    for (std::string& test : vertexToValues[id]) {
+                        std::cout << test << std::endl;
+                    }
                     serialize_vertex_values(table, &VAOffset, &HashOffset, id, vertexToValues[id].size(), vertexToValues[id],
                                             out);
                 }

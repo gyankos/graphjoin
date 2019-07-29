@@ -78,10 +78,12 @@ void serialize_vertex_values(FILE *VAIndexFile,           //Where to store the v
 
     // b. coping both element size and String
     unsigned int sizeString = 0;
-    for (i = 0; i<valueSize-1; i++) { //Skipping the last integer, I already have the offsetIN for the end of the last string
-        sizeString += (valueArray[i].size())+1;
-        //Writing the number
-        fwrite(&sizeString,sizeof (unsigned int),1, VAIndexFile);
+    if (valueSize > 0) {
+        for (i = 0; i<valueSize-1; i++) { //Skipping the last integer, I already have the offsetIN for the end of the last string
+            sizeString += (valueArray[i].size())+1;
+            //Writing the number
+            fwrite(&sizeString,sizeof (unsigned int),1, VAIndexFile);
+        }
     }
 
     for (i = 0; i<valueSize; i++) {

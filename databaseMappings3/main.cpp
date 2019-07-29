@@ -7,6 +7,7 @@
 #include <map>
 #include "operations/eqjoin/eq_conj_join.h"
 #include "operations/eqjoin/eq_disj_join.h"
+#include "operations/eqjoin/eq_conj_join_for_bulks.h"
 #include <vector>
 #include <algorithm>
 
@@ -95,8 +96,10 @@ int main(int argc, char** argv) {
         // TODO: check the operation
         if (type == "true") {
             std::cout << cgsString << "," << EqConjunctiveJoin(leftOperandVertex, rightOperandVertex, outFile, map) << std::endl;
-        } else {
+        } if (type == "false") {
             std::cout << cgsString << "," << EqDisjunctiveJoin(leftOperandVertex, rightOperandVertex, outFile, map) << std::endl;
+        } else if (type == "bulk_true") {
+            std::cout << cgsString << "\t" << EqConjunctiveJoinForBulks(leftOperandVertex, rightOperandVertex, outFile, map) << std::endl;
         }
 
         //"/media/giacomo/Data/Progetti/journalgraphjoin/databaseMappings3/operators/graph.txt_100000000_5_0.400000_1_0_vertices.csv"
