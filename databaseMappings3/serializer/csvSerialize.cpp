@@ -22,7 +22,7 @@
 
 std::map<unsigned int, std::vector<unsigned int>> hashToVertices;
 std::unordered_map<unsigned int, std::vector<std::string>> vertexToValues;
-std::unordered_map<unsigned int, unsigned int> vertexToHash;
+std::map<unsigned int, unsigned int> vertexToHash;
 unsigned int prime = 17;
 
 void vertex_load(std::string csvVertices, std::vector<int> numHashes) {
@@ -80,8 +80,8 @@ std::pair<double,double> csvSerialize(std::string &csvVertices, std::string csvE
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    std::thread first (vertex_load, csvVertices, numHashes);
-    std::thread second (edge_load,csvEdges);
+    std::thread first(vertex_load, csvVertices, numHashes);
+    std::thread second(edge_load, csvEdges);
 
     // Barrier for wait
     first.join();
@@ -98,35 +98,54 @@ std::pair<double,double> csvSerialize(std::string &csvVertices, std::string csvE
     unsigned long VAOffset = 0;
     unsigned long HashOffset = 0;
 
-    auto it = hashToVertices.begin();
-    while (it != hashToVertices.end()) {
-        //if (cnt % 10000 == 1)
-        //    std::cout << cnt << "-th Hash" << std::endl;
+    // Serializing the hash values and primary index
+    {
+        std::unordered_map<unsigned int, unsigned int> id_to_offset;
+        {
+            auto it = hashToVertices.begin();
+            while (it != hashToVertices.end()) {
+                //if (cnt % 10000 == 1)
+                //    std::cout << cnt << "-th Hash" << std::endl;
 
-        unsigned int hash = it->first;
+                unsigned int hash = it->first;
 
-        // Writing the hash value
-        serialize_hash(primaryIndex, hash, HashOffset);
+                // Writing the hash value
+                serialize_hash(primaryIndex, hash, HashOffset);
 
-        for (unsigned int &id : it->second) {
-            //unsigned int id = it->second;
-            std::vector<EDGES_OUTIN> out;
-            auto ptr = adjList.find(id);
-            while (ptr != adjList.cend() && ptr->first == id) {
-                out.emplace_back(vertexToHash[ptr->second], ptr->second);
-                ptr++;
+                for (unsigned int &id : it->second) {
+                    //unsigned int id = it->second;
+                    std::vector<EDGES_OUTIN> out;
+                    auto ptr = adjList.find(id);
+                    while (ptr != adjList.cend() && ptr->first == id) {
+                        out.emplace_back(vertexToHash[ptr->second], ptr->second);
+                        ptr++;
+                    }
+                    std::sort(out.begin(), out.end());
+                    //unsigned long thiOffset = VAOffset;
+                    id_to_offset[id] = VAOffset;
+                    serialize_vertex_values(table, &VAOffset, &HashOffset, id, vertexToValues[id].size(), vertexToValues[id],
+                                            out);
+                }
+                it++;
             }
-            std::sort(out.begin(), out.end());
-            unsigned long thiOffset = VAOffset;
-            serialize_vertex_values(table, &VAOffset, &HashOffset, id, vertexToValues[id].size(), vertexToValues[id], out);
-            serialize_vertex_id(secondaryIndex, id, hash, thiOffset);
         }
-        it++;
+        // Serializing the secondary index
+        {
+            auto it = vertexToHash.begin();
+            while (it != vertexToHash.end()) {
+                serialize_vertex_id(secondaryIndex, it->first, it->second, id_to_offset[it->first]);
+                it++;
+            }
+        }
     }
+
     auto finishIndex = std::chrono::high_resolution_clock::now();
-    malloc_stats();
+    //malloc_stats();
     std::chrono::duration<double> loadingTime = finishLoad - start;
     std::chrono::duration<double> d = finishIndex - start;
+    fclose(primaryIndex);
+    fclose(table);
+    fclose(secondaryIndex);
 
     return std::make_pair(loadingTime.count(), d.count()-loadingTime.count());
     //std::cout << operandSize << "," << currentSeed << ",total," << d << std::endl;

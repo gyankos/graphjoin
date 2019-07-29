@@ -100,13 +100,16 @@ public  class CypherQueryCompiler {
         }
 
         public String generateCypherQuery() {
-            return "MATCH (src1)-[:r]->(dst1),\n" +
+            return 
+		    // Conjunctive case: the only one where I create both vertices and edges
+                    "MATCH (src1)-[:r]->(dst1),\n" +
                     "     (src2)-[:r]->(dst2)\n" +
                     "WHERE "+eqRule("src",hashScheme)+" AND "+eqRule("dst",hashScheme)+" AND src1.graph='L' AND src2.graph='R' AND dst1.graph='L' AND dst2.graph='R'\n" +
                     "CREATE p=(:U {id1:src1.UID, id2:src2.UID, MyGraphLabel:\"U-\"})-[:r]->(:U {id1:dst1.UID, id2:dst2.UID, MyGraphLabel:\"U-\"}) return p\n" +
                     "UNION ALL\n" +
-                    "MATCH (src1)-[:r]->(u), (src2)-[:r]->(v)\n"+
-                    "WHERE "+eqRule("src",hashScheme)+" AND src1.graph='L' AND src2.graph='R' AND (("+neqRule("src",hashScheme)+"))\n" +
+                    // In all the other remaining cases, I just create the vertices with no edges
+                    "MATCH (src1)-[:r]->(dst1), (src2)-[:r]->(dst2)\n"+
+                    "WHERE "+eqRule("src",hashScheme)+" AND src1.graph='L' AND src2.graph='R' AND (("+neqRule("dst",hashScheme)+"))\n" +
                     "CREATE p=(:U {id1:src1.UID, id2:src2.UID,  MyGraphLabel:\"U-\"}) return p\n" +
                     "UNION ALL\n"+
                     "MATCH (src1)-[:r]->(u), (src2)\n"+
@@ -122,4 +125,49 @@ public  class CypherQueryCompiler {
                     "CREATE p=(:U {id1:src1.UID, id2:src2.UID,  MyGraphLabel:\"U-\"}) return p\n";
         }
 
+	// TODO!!!!
+	public String generateCypherDisjunctiveQuery() {
+            return  // Preserving the conjunctive case for the disjunctive semantics
+                    "MATCH (src1)-[:r]->(dst1),\n" +
+                    "     (src2)-[:r]->(dst2)\n" +
+                    "WHERE "+eqRule("src",hashScheme)+" AND "+eqRule("dst",hashScheme)+" AND src1.graph='L' AND src2.graph='R' AND dst1.graph='L' AND dst2.graph='R'\n" +
+                    "CREATE p=(:U {id1:src1.UID, id2:src2.UID, MyGraphLabel:\"U-\"})-[:r]->(:U {id1:dst1.UID, id2:dst2.UID, MyGraphLabel:\"U-\"}) return p\n" +
+                    "UNION ALL\n" +
+                    // If the destination vertices do not match, then the edge has not to be drawn (merging with the last case of the conjunction, so to reduce the number of the elements within the query plan, that explodes under the disjunction)
+                    "MATCH (src1), (src2)\n"+
+                    "OPTIONAL MATCH (src1)-[:r]->(dst1), (src2)-[:r]->(dst2)\n"+
+                    "WHERE "+eqRule("src",hashScheme)+" AND src1.graph='L' AND src2.graph='R' AND dst1.graph='L' AND dst2.graph='R' AND (("+neqRule("dst",hashScheme)+"))\n" +
+                    "CREATE p=(:U {id1:src1.UID, id2:src2.UID,  MyGraphLabel:\"U-\"}) return p\n" +
+                    "UNION ALL\n"+
+		    // If one of the vertices has no outgoing edges, still the outgoing element needs to be linked via left edge
+                    "MATCH (src1)-[:r]->(dst1), (src2)\n"+
+		    "OPTIONAL MATCH (dst2)\n"+
+                    "WHERE "+eqRule("src",hashScheme)+" AND "+eqRule("dst",hashScheme)+" AND src1.graph='L' AND src2.graph='R' AND dst1.graph='L' AND dst2.graph='R' AND ((NOT ((src2)-[:r]->())))\n" +
+                    "CREATE p=(:U {id1:src1.UID, id2:src2.UID,  MyGraphLabel:\"U-\"})-[:r]->(:U {id1:dst1.UID, id2:dst2.UID, MyGraphLabel:\"U-\"}) return p\n"+
+                    "UNION ALL\n" +
+		    // If one of the vertices has no outgoing edges, still the outgoing element needs to be linked via right edge
+                    "MATCH (src1), (src2)-[:r]->(dst2)\n"+
+		    "OPTIONAL MATCH (dst1)\n"+
+                    "WHERE "+eqRule("src",hashScheme)+" AND "+eqRule("dst",hashScheme)+" AND src1.graph='L' AND src2.graph='R' AND dst1.graph='L' AND dst2.graph='R' AND ((NOT ((src1)-[:r]->())))\n"+
+                    "CREATE p=(:U {id1:src1.UID, id2:src2.UID,  MyGraphLabel:\"U-\"})-[:r]->(:U {id1:dst1.UID, id2:dst2.UID, MyGraphLabel:\"U-\"}) return p\n"+
+                    "UNION ALL\n" +
+ 		    // Replication: in the case that the nodes have some edges, but none of them satisfy the pattern			
+                    // 1)
+		    "MATCH (src1)-[:r]->(dst1),\n"+
+		    "(src2)-[:r]->(dst3)\n"+
+		    "OPTIONAL MATCH (dst2)\n"+
+		    "WITH src1, dst1, src2, COLLECT(dst3) as coll, dst2\n"+
+		    "WHERE src1.graph='L' AND src2.graph='R' AND dst1.graph='L' AND dst2.graph='R' AND "+eqRule("src",hashScheme)+" AND "+eqRule("dst",hashScheme)+" AND NONE (x IN coll WHERE "+eqRule("dst",hashScheme).replaceAll("dst2","x")+")\n"+ 
+                    "CREATE p=(:U {id1:src1.UID, id2:src2.UID,  MyGraphLabel:\"U-\"})-[:r]->(:U {id1:dst1.UID, id2:dst2.UID, MyGraphLabel:\"U-\"}) return p\n"+
+                    "UNION ALL\n" +
+		    // 2) 
+		    "MATCH (src1)-[:r]->(dst3),\n"+
+		    "(src2)-[:r]->(dst2)\n"+
+		    "OPTIONAL MATCH (dst1)\n"+
+		    "WITH src1, dst1, src2, COLLECT(dst3) as coll, dst2\n"+
+		    "WHERE src1.graph='L' AND src2.graph='R' AND dst1.graph='L' AND dst2.graph='R' AND "+eqRule("src",hashScheme)+" AND "+eqRule("dst",hashScheme)+" AND NONE (x IN coll WHERE "+eqRule("dst",hashScheme).replaceAll("dst1","x")+")\n"+ 
+                    "CREATE p=(:U {id1:src1.UID, id2:src2.UID,  MyGraphLabel:\"U-\"})-[:r]->(:U {id1:dst1.UID, id2:dst2.UID, MyGraphLabel:\"U-\"}) return p\n";
+        }
+
     }
+

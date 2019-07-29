@@ -151,11 +151,11 @@ double EqConjunctiveJoin(const std::string &leftPath, const std::string &rightPa
                                         while (ii<NuSize && Nu[ii].adjacentHash == hL) {
                                             jj = j;
                                             VAEntry up;
-                                            descriptorFromVertexID(&up,indexLeft[i].id,indexLeft,fileOffsetLeft);
+                                            descriptorFromVertexID(&up,Nu[ii].adjacentID,indexLeft,fileOffsetLeft);
                                             qt2.compileOverLeftVertex(&up);
                                             while (jj<NvSize && Nv[jj].adjacentHash == hR) {
                                                 VAEntry vp;
-                                                descriptorFromVertexID(&vp,indexRight[j].id,indexRight,fileOffsetRight);
+                                                descriptorFromVertexID(&vp,Nv[jj].adjacentID,indexRight,fileOffsetRight);
                                                 if (qt2.compileOverRightVertex(&vp)) {
                                                     //edges++;
                                                     // TODO: only for other data structures solution->storeVertexInternal(up.vertexHeader->id,vp.vertexHeader->id);

@@ -22,6 +22,8 @@ pkg_search_module(REDLAND REQUIRED redland)
 
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIRS})
 
+add_executable(bulk_fusion       operations/bulk/bulk_fusion.cpp operations/bulk/bulk_fusion.h serializer/mappers.cpp serializer/mappers.h serializer/serializers.cpp)
+
 add_executable(reindexing        indexing.cpp
                                  serializer/HashIndexArrayField.h serializer/mappers.cpp serializer/mappers.h serializer/serializers.cpp serializer/serializers.h serializer/VAOffsetStructures.h serializer/VertexIndexArrayField.h serializer/entry.cpp serializer/entry.h)
 
@@ -37,7 +39,7 @@ add_executable(graph_sampler        graph_sampler.cpp BitArray1D.cpp BitArray1D.
 TARGET_LINK_LIBRARIES(graph_sampler ${Boost_LIBRARIES})
 
 add_executable(graph_join           main.cpp
-                                    serializer/mappers.h serializer/mappers.cpp operations/eqjoin/eq_conj_join.cpp operations/utils/query_chunk.cpp operations/utils/query_chunk.h operations/utils/query.cpp operations/utils/query.h operations/utils/store_join_results.cpp operations/utils/store_join_results.h operations/eqjoin/eq_conj_join.h operations/eqjoin/eq_disj_join.cpp operations/eqjoin/eq_disj_join.h)
+                                    serializer/mappers.h serializer/mappers.cpp operations/eqjoin/eq_conj_join.cpp operations/utils/query_chunk.cpp operations/utils/query_chunk.h operations/utils/query.cpp operations/utils/query.h operations/utils/store_join_results.cpp operations/utils/store_join_results.h operations/eqjoin/eq_conj_join.h operations/eqjoin/eq_disj_join.cpp operations/eqjoin/eq_disj_join.h  operations/eqjoin/eq_conj_join_for_bulks.h operations/eqjoin/eq_conj_join_for_bulks.cpp)
 
 add_executable(graph_statistics     statistics.cpp)
 

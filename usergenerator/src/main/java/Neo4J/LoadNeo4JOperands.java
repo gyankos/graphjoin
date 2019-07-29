@@ -112,7 +112,7 @@ public class LoadNeo4JOperands extends BenchmarkClass {
             operandRightSchema[i] = x+"2";
         }
 
-        for (int pos=7; pos<8; pos++) {
+        for (int pos=0; pos<5; pos++) {
             File torem = new File(""+(pos));
             if (torem.exists()) {
                 delete(torem);

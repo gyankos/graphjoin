@@ -36,6 +36,7 @@ public class BenchmarkNeo4JQueryOverSamples {
     public static void main(String[] args) throws IOException {
 
         Properties properties = new Properties();
+        boolean isConjunctive = false;
         properties.load(new FileReader("sampler_chain_sql.properties"));
         String[] steps = properties.getProperty("SAMPLES_PARAMETERS").split(",");
         String[] vertexArguments = properties.getProperty("OPERAND_SCHEMA").split(",");
@@ -50,7 +51,7 @@ public class BenchmarkNeo4JQueryOverSamples {
         //System.out.println(tester.generateCypherQuery());
         //System.exit(1);
 
-        for (int pos=5; pos<6; pos++) {
+        for (int pos=1; pos<5; pos++) {
             System.out.println("Benchmarking graph join i-th:" + pos);
             Map<Set<String>, Set<String>> vertexLabelToAttributesToIndex = new HashMap<>(1);
             Set<String> type = new HashSet<>(1);
@@ -67,7 +68,8 @@ public class BenchmarkNeo4JQueryOverSamples {
             long time_t = System.nanoTime();
             double t = g.startTransaction(()-> {
                Result r;
-                r = g.doGraphQuery(tester.generateCypherQuery());
+               System.out.println(tester.generateCypherDisjunctiveQuery());
+                r = g.doGraphQuery(isConjunctive ? tester.generateCypherQuery() : tester.generateCypherDisjunctiveQuery());
                 r.close();
                 return 1.0;
             }).get();
