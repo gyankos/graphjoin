@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
 
     unsigned long N = sizes.size();
     unsigned long M = seeds.size();
-    for (unsigned long i = 5; i<N; i++) {
+    for (unsigned long i = 0; i<N; i++) {
         int currentGraphSize = sizes[i];
         std::string cgsString = std::to_string(currentGraphSize);
         std::string leftGraphName = cgsString +"L/";

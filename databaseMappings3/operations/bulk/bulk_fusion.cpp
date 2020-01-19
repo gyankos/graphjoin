@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
         auto finishLoad = std::chrono::high_resolution_clock::now();
 
         // 2. Creating the indexed graph
-        const ADJLIST::iterator &it = adjList.begin();
+        ADJLIST::iterator it = adjList.begin();
         const ADJLIST::iterator &end = adjList.end();
         unsigned long VAOffset = 0;
         unsigned long HashOffset;
@@ -74,6 +74,7 @@ int main(int argc, char* argv[]) {
             std::sort(out.begin(), out.end());
             serialize_vertex_id(secondaryIndex, id, 0, VAOffset);
             serialize_vertex_values(table, &VAOffset, &HashOffset, id, 0, noValues, out);
+            it++;
         }
         auto finishIndex = std::chrono::high_resolution_clock::now();
 

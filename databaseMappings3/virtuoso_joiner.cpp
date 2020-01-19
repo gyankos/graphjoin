@@ -75,6 +75,9 @@ int main(int argc, char** argv) {
                       "\t\tBIND (URI(CONCAT(\"http://jackbergus.alwaysdata.net/values/\",?id3,\"-\",?id4)) AS ?newDst)\n"
                       "\t}\n"
                       "}";
+            std::cout << qFirst << std::endl;
+            exit(1);
+
 
            Virtuoso virt{};
             VirtuosoQuery* q = virt.compileQuery(qFirst);
@@ -83,8 +86,7 @@ int main(int argc, char** argv) {
                 t = clock() - t;
                 std::cout << graphName << "," << ((double)((double)(clock() - t))/(CLOCKS_PER_SEC / 1000.0)) << std::endl;
             }
-           /*std::cout << qFirst << std::endl;
-           exit(1);*/
+           /**/
 
         }
     }
