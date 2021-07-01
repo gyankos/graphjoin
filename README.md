@@ -18,6 +18,6 @@ If your system has the same default directory paths as Ubuntu (GNU/Linux), then 
 The Java project in the `usergenerator` folder does not require any additional tool set-up a part from Maven 3, which will automatically download all the dependencies and libraries required for the project. Some of the Java scripts require to set-up the C++ project first.
 
 ## How to recreate the graph operands (Syntetic Networks)
-Run the java class `GCEA.DatasetSampleGenerator` from the java project in the `usergenerator` folder. This class automates the operations for generating the different operands and subgraphs from a single adjacency list dataset. 
+Run the java class [`GCEA.DatasetSampleGenerator`](https://github.com/gyankos/graphjoin/blob/master/usergenerator/src/main/java/CGEA/DatasetSampleGenerator.java) from the java project in the `usergenerator` folder. This class automates the operations for generating the different operands and subgraphs from a single adjacency list dataset. 
 
 The datasets used for the "[On Efficiently Equi-Joining Graphs](https://doi.org/10.1145/3472163.3472269)" paper @IDEAS'21 and generated from this pipeline are available on both [FigShare](https://doi.org/10.6084/m9.figshare.12947027) and [OSF](https://osf.io/xney5/).
