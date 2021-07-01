@@ -10,7 +10,7 @@ The C++ project contains the actual code for GCEA and the querying for Virtuoso,
 * `virtuoso_loader`, which loads the operands into virtuoso from CSV files.
 
 ## How to set-up Virtuoso.
-The process of the Virtuoso Setup is described by the script `virtuoso_dependencies.sh`, which will install all the dependencies and libraries required to connect the C++ code to the actual Virtuoso Driver. After doing that, we need to set-up the ODBC connections that are exploited by the C++ libraries.
+The process of the Virtuoso Setup is described by the script [`virtuoso_dependencies.sh`](https://github.com/gyankos/graphjoin/blob/master/virtuoso_setup/%20virtuoso_dependencies.sh), which will install all the dependencies and libraries required to connect the C++ code to the actual Virtuoso Driver. After doing that, we need to set-up the ODBC connections that are exploited by the C++ libraries.
 
 If your system has the same default directory paths as Ubuntu (GNU/Linux), then the user can run the `cpfiles.sh` script in the `odbc_setup` folder to copy the odbc connection drivers to the right and expected locations. After editing the file `virtuoso_setup/virtuoso.ini` accordingly to your hardware specification, the script `virt_start.sh` in the same folder will start the Virtuoso Server. Now, the Virtuoso server should be receiving binary/ODBC connections on the 1111 port, while the web browser interface should be provided on http://localhost:8890/. The default username and password for accessing the Virtuoso Conductor are both `dba`, for DataBase Administrator.
 
