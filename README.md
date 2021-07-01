@@ -20,4 +20,4 @@ The Java project in the `usergenerator` folder does not require any additional t
 ## How to recreate the graph operands (Syntetic Networks)
 Run the java class `GCEA.DatasetSampleGenerator` from the java project in the `usergenerator` folder. This class automates the operations for generating the different operands and subgraphs from a single adjacency list dataset. 
 
-The datasets used for the [Under Review] paper and generated from this pipeline are available on [FigShare](https://doi.org/10.6084/m9.figshare.12947027)
+The datasets used for the [Under Review] paper and generated from this pipeline are available on both [FigShare](https://doi.org/10.6084/m9.figshare.12947027) and [OSF](https://osf.io/xney5/).
